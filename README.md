@@ -13,13 +13,6 @@ de impresión 3D y electrónica con Arduino (kits, reloj, recursos y evidencias)
 - `evidencias.html` — Evidencias
 - `equipo.html` — Equipo
 
-## Vista previa local
-
-```bash
-cd ejez
-python3 -m http.server 8000
-# abrir http://localhost:8000
-```
 
 ## Notas técnicas
 
