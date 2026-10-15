@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformando el eje Z — El reloj</title>
+  <meta name="description" content="Reloj del proyecto Transformando el eje Z: la combinación de impresión 3D y electrónica con Arduino Nano, motor paso a paso 28BYJ-48 y driver ULN2003.">
+  <link rel="icon" type="image/png" href="./assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script>
+    try { if (localStorage.getItem("theme") === "dark") document.documentElement.classList.add("dark"); } catch (e) {}
+  </script>
+  <script type="module" crossorigin src="./assets/main-V_hvr2Cv.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/main-D3dzY4R9.css">
+</head>
+<body class="min-h-screen">
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="fixed inset-x-0 top-0 z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-950/80">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <a class="flex items-center gap-2.5" href="./index.html">
+        <img src="./assets/logo-sena.webp" alt="Logo SENA" class="hidden h-10 w-10 rounded-md object-contain sm:inline dark:hidden">
+        <img src="./assets/logo-sena-claro.webp" alt="Logo SENA" class="hidden h-10 w-10 rounded-md object-contain dark:inline">
+        <img src="./assets/logo-institucion.webp" alt="Logo I.E. Colegio General Santander" class="hidden h-10 w-10 rounded-md object-contain sm:inline">
+        <img src="./assets/logo-simple.webp" alt="Logo Transformando el eje Z" class="h-14 w-14 rounded-lg object-contain">
+        <span class="font-display text-xl font-bold text-slate-900 dark:text-white">Transformando el eje Z</span>
+      </a>
+      <ul class="hidden items-center gap-1 md:flex">
+        <li><a href="./index.html" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400">Inicio</a></li>
+        <li><a href="./arduino.html" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400">Kits Arduino</a></li>
+        <li><a href="./impresion3d.html" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400">Impresión 3D</a></li>
+        <li><a href="./reloj.html" class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-600/25">Reloj</a></li>
+        <li><a href="./recursos.html" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400">Recursos</a></li>
+        <li><a href="./evidencias.html" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400">Evidencias</a></li>
+        <li><a href="./equipo.html" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400">Equipo</a></li>
+      </ul>
+      <div class="flex items-center gap-2">
+        <button data-theme-toggle onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema"
+          class="flex h-10 w-10 items-center justify-center rounded-lg text-lg transition hover:bg-slate-100 dark:hover:bg-slate-800">🌙</button>
+        <button onclick="toggleMenu()" aria-label="Abrir menú"
+          class="flex h-10 w-10 items-center justify-center rounded-lg text-xl transition hover:bg-slate-100 md:hidden dark:hover:bg-slate-800">☰</button>
+      </div>
+    </div>
+    <ul id="navLinks" class="mobile-menu md:hidden">
+      <li><a href="./index.html" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-500/10">Inicio</a></li>
+      <li><a href="./arduino.html" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-500/10">Kits Arduino</a></li>
+      <li><a href="./impresion3d.html" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-500/10">Impresión 3D</a></li>
+      <li><a href="./reloj.html" class="block rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white">Reloj</a></li>
+      <li><a href="./recursos.html" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-500/10">Recursos</a></li>
+      <li><a href="./evidencias.html" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-500/10">Evidencias</a></li>
+      <li><a href="./equipo.html" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-500/10">Equipo</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══ CABECERA ═══ -->
+  <div class="mx-auto max-w-6xl px-4 pt-28 sm:px-6">
+    <p class="text-sm text-slate-500 dark:text-slate-400"><a class="text-blue-600 hover:underline dark:text-blue-400" href="./index.html">Inicio</a> <span>/ El reloj</span></p>
+    <header class="mt-3">
+      <h1 class="font-display text-3xl font-bold text-slate-900 sm:text-4xl dark:text-white">El reloj: impresión 3D + electrónica</h1>
+      <p class="mt-3 max-w-2xl text-lg text-slate-600 dark:text-slate-400">El objetivo del proyecto es mostrar cómo se pueden combinar ambas disciplinas. Este reloj es el resultado: un chasis y engranajes impresos en 3D, movidos por un motor paso a paso controlado con Arduino.</p>
+    </header>
+  </div>
+
+  <!-- ═══ VIDEO DEL ENSAMBLAJE ═══ -->
+  <section class="pt-12">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="reveal">
+        <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">Ensamblaje del reloj</h2>
+      </div>
+
+      <!-- Video del ensamblaje del reloj en YouTube (ID: YESX_gW8nek) -->
+      <div class="reveal mt-6 overflow-hidden rounded-2xl border border-slate-200 shadow-sm dark:border-slate-800">
+        <div class="aspect-video">
+          <iframe src="https://www.youtube.com/embed/YESX_gW8nek" title="Ensamblaje del reloj" class="h-full w-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MATERIALES ═══ -->
+  <section class="pt-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="reveal">
+        <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">Materiales necesarios</h2>
+      </div>
+      <div class="reveal mt-6 overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <table class="data w-full text-left text-sm">
+          <thead>
+            <tr class="bg-slate-100 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-800/60 dark:text-slate-400">
+              <th class="px-4 py-3 font-semibold">Componente</th>
+              <th class="px-4 py-3 font-semibold">Cantidad</th>
+              <th class="px-4 py-3 font-semibold">Nota</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-700 dark:text-slate-300">
+            <tr><td class="px-4 py-3 font-medium">Arduino Nano</td><td class="px-4 py-3">1</td><td class="px-4 py-3">Microcontrolador principal</td></tr>
+            <tr><td class="px-4 py-3 font-medium">Cable USB para Arduino Nano</td><td class="px-4 py-3">1</td><td class="px-4 py-3">Para programar y alimentar</td></tr>
+            <tr><td class="px-4 py-3 font-medium">Motor paso a paso 28BYJ-48</td><td class="px-4 py-3">1</td><td class="px-4 py-3">Motor de 5V con engranajes internos</td></tr>
+            <tr><td class="px-4 py-3 font-medium">Driver ULN2003</td><td class="px-4 py-3">1</td><td class="px-4 py-3">Placa de control del motor</td></tr>
+            <tr><td class="px-4 py-3 font-medium">Cables jumper</td><td class="px-4 py-3">4+</td><td class="px-4 py-3">De tipo Hembra a hembra</td></tr>
+            <tr><td class="px-4 py-3 font-medium">Imanes de neodimio pequeños</td><td class="px-4 py-3">3</td><td class="px-4 py-3">Para fijar las piezas móviles</td></tr>
+            <tr><td class="px-4 py-3 font-medium">Tornillos pequeños</td><td class="px-4 py-3">4</td><td class="px-4 py-3">Para ensamblar la caja</td></tr>
+            <tr><td class="px-4 py-3 font-medium">Impresiones 3D</td><td class="px-4 py-3">10</td><td class="px-4 py-3">Piezas descargables más abajo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="reveal mt-6 border-l-4 border-amber-500 bg-amber-50 px-4 py-3 text-sm text-slate-700 dark:bg-amber-500/10 dark:text-slate-300"><b>Importante al poner los imanes:</b> hay que asegurarse de que los polos estén correctamente puestos. El imán derecho debe atraer el lado derecho del imán de la aguja, y el izquierdo debe atraer el lado izquierdo de la aguja. Si quedan invertidos, el rotor no girará bien.</p>
+    </div>
+  </section>
+
+  <!-- ═══ MODELOS 3D ═══ -->
+  <section class="pt-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="reveal">
+        <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">Modelos 3D para imprimir</h2>
+        <p class="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">Descarga todas las piezas del reloj (engranajes, rotores, caja y cubiertas). Los modelos están en formato STL, listos para cualquier software de rebanado como Cura o PrusaSlicer.</p>
+      </div>
+      <a class="reveal mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-600/30 transition hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-xl hover:shadow-blue-600/40"
+        href="https://drive.google.com/drive/folders/1emWwQt4g1lgnyWIbQUbGAbPwmxYJXJbw?usp=drive_link" target="_blank" rel="noopener">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Descargar todos los modelos
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ CÓDIGO ARDUINO ═══ -->
+  <section class="py-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="reveal">
+        <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">Código Arduino</h2>
+      </div>
+      <div class="reveal mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <details class="acc">
+          <summary class="flex cursor-pointer items-center gap-3 p-5 font-display font-bold text-slate-900 dark:text-white">
+            <svg class="h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Ver código Arduino (reloj.ino)
+            <span class="chev ml-auto text-slate-400">▾</span>
+          </summary>
+          <div class="border-t border-slate-200 p-5 dark:border-slate-800">
+            <div data-code class="overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-lg">
+              <div class="flex items-center justify-between bg-slate-900 px-4 py-2">
+                <span class="font-mono text-xs text-slate-400">reloj.ino</span>
+                <button class="rounded-md border border-slate-700 px-3 py-1 text-xs font-medium text-slate-300 transition hover:border-blue-500 hover:text-blue-400" onclick="copiar(this)">Copiar</button>
+              </div>
+              <pre><code><span class="c">// ==========================================</span>
+<span class="c">// Reloj impulsado por motor paso a paso</span>
+<span class="c">// Controlado con Arduino</span>
+<span class="c">// ==========================================</span>
+
+<span class="c">// Milisegundos que equivalen a un "minuto" de reloj</span>
+<span class="c">// (en la demo se usa 1000 para ver el movimiento rápido;</span>
+<span class="c">//  en el reloj real se ajusta a 60000)</span>
+<span class="kw">#define</span> <span class="fn">MILLIS_PER_MIN</span> <span class="num">1000</span>
+
+<span class="c">// Pasos del motor para una vuelta completa del rotor de minutos</span>
+<span class="kw">#define</span> <span class="fn">STEPS_PER_ROTATION</span> <span class="num">15360</span>
+
+<span class="c">// Tiempo mínimo de espera entre pasos (afecta la suavidad)</span>
+<span class="kw">int</span> <span class="fn">delaytime</span> = <span class="num">4</span>;
+
+<span class="c">// Pines de Arduino conectados al driver ULN2003</span>
+<span class="kw">int</span> <span class="fn">port</span>[<span class="num">4</span>] = {<span class="num">5</span>, <span class="num">4</span>, <span class="num">3</span>, <span class="num">2</span>};
+
+<span class="c">// Secuencia de activación de las bobinas del motor:</span>
+<span class="c">// cada fila es una fase, cada columna un pin</span>
+<span class="kw">int</span> <span class="fn">seq</span>[<span class="num">4</span>][<span class="num">4</span>] = {
+  {  <span class="kw">LOW</span>,  <span class="kw">LOW</span>, <span class="kw">HIGH</span>,  <span class="kw">LOW</span>},
+  {  <span class="kw">LOW</span>,  <span class="kw">LOW</span>,  <span class="kw">LOW</span>, <span class="kw">HIGH</span>},
+  { <span class="kw">HIGH</span>,  <span class="kw">LOW</span>,  <span class="kw">LOW</span>,  <span class="kw">LOW</span>},
+  {  <span class="kw">LOW</span>, <span class="kw">HIGH</span>,  <span class="kw">LOW</span>,  <span class="kw">LOW</span>}
+};
+
+<span class="c">// Gira el motor "step" pasos (positivo o negativo = sentido)</span>
+<span class="kw">void</span> <span class="fn">rotate</span>(<span class="kw">int</span> step) {
+  <span class="kw">static</span> <span class="kw">int</span> phase = <span class="num">0</span>;
+  <span class="kw">int</span> i, j;
+  <span class="c">// delta 1 = avanzar una fase; delta 3 = retroceder una fase</span>
+  <span class="kw">int</span> delta = (step > <span class="num">0</span>) ? <span class="num">1</span> : <span class="num">3</span>;
+  <span class="kw">int</span> dt = <span class="num">20</span>;
+
+  step = (step > <span class="num">0</span>) ? step : -step;
+  <span class="kw">for</span>(j = <span class="num">0</span>; j &lt; step; j++) {
+    phase = (phase + delta) % <span class="num">4</span>;
+    <span class="kw">for</span>(i = <span class="num">0</span>; i &lt; <span class="num">4</span>; i++) {
+      digitalWrite(port[i], seq[phase][i]);
+    }
+    delay(dt);
+    <span class="kw">if</span>(dt > delaytime) dt--;  <span class="c">// acelera poco a poco</span>
+  }
+  <span class="c">// Corte de energía: apaga todas las bobinas</span>
+  <span class="c">// para no calentar el motor ni gastar corriente</span>
+  <span class="kw">for</span>(i = <span class="num">0</span>; i &lt; <span class="num">4</span>; i++) {
+    digitalWrite(port[i], <span class="kw">LOW</span>);
+  }
+}
+
+<span class="c">// Configuración inicial</span>
+<span class="kw">void</span> <span class="fn">setup</span>() {
+  pinMode(port[<span class="num">0</span>], <span class="kw">OUTPUT</span>);
+  pinMode(port[<span class="num">1</span>], <span class="kw">OUTPUT</span>);
+  pinMode(port[<span class="num">2</span>], <span class="kw">OUTPUT</span>);
+  pinMode(port[<span class="num">3</span>], <span class="kw">OUTPUT</span>);
+  rotate(-<span class="num">10</span>);  <span class="c">// carrera de aproximación en reversa</span>
+  rotate(<span class="num">10</span>);   <span class="c">// toma impulso sin carga pesada</span>
+  rotate(<span class="fn">STEPS_PER_ROTATION</span> / <span class="num">60</span>);  <span class="c">// avanza el primer minuto</span>
+}
+
+<span class="c">// Bucle principal: cada "minuto" mueve el rotor a su nueva posición</span>
+<span class="kw">void</span> <span class="fn">loop</span>() {
+  <span class="kw">static</span> <span class="kw">long</span> prev_min = <span class="num">0</span>, prev_pos = <span class="num">0</span>;
+  <span class="kw">long</span> min;
+  <span class="kw">static</span> <span class="kw">long</span> pos;
+
+  min = millis() / <span class="fn">MILLIS_PER_MIN</span>;
+  <span class="kw">if</span>(prev_min == min) {
+    <span class="kw">return</span>;  <span class="c">// todavía no ha pasado un minuto</span>
+  }
+  prev_min = min;
+  <span class="c">// posición absoluta del rotor según los minutos transcurridos</span>
+  pos = (<span class="fn">STEPS_PER_ROTATION</span> * min) / <span class="num">60</span>;
+  rotate(-<span class="num">10</span>);  <span class="c">// reversa para quitar la tensión de los engranajes</span>
+  rotate(<span class="num">10</span>);   <span class="c">// toma impulso para vencer la fricción</span>
+  <span class="kw">if</span>(pos - prev_pos > <span class="num">0</span>) {
+    rotate(pos - prev_pos);
+  }
+  prev_pos = pos;
+}</code></pre>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="border-t border-slate-200 bg-white py-10 dark:border-slate-800 dark:bg-slate-900/50">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <a class="flex items-center gap-3" href="./index.html">
+        <img src="./assets/logo-simple.webp" alt="Logo Transformando el eje Z" class="h-12 w-12 rounded-lg object-contain">
+        <span>
+          <b class="block font-display text-slate-900 dark:text-white">Transformando el eje Z</b>
+          <small class="text-sm text-slate-500 dark:text-slate-400">Proyecto de Técnica en Sistemas</small>
+        </span>
+      </a>
+      <div class="mt-4 flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
+        <img src="./assets/logo-institucion.webp" alt="Logo I.E. Colegio General Santander" class="h-12 w-12 rounded-lg object-contain">
+        <p><b class="text-slate-900 dark:text-white">Institución Educativa Colegio General Santander</b> · Cl. 6 #8-10, Villa Del Rosario, Norte de Santander.</p>
+      </div>
+      <p class="mt-2 text-sm text-slate-500 dark:text-slate-500">Hecho con HTML, Tailwind CSS y JavaScript por el equipo de Técnica en Sistemas · 2026</p>
+    </div>
+  </footer>
+
+</body>
+</html>
